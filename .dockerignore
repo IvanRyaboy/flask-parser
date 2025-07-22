@@ -1,0 +1,54 @@
+!app/
+!Dockerfile
+!docker-compose*
+!.dockerignore
+!requirements.txt
+
+# Исключения
+app/__pycache__/
+app/*.py[cod]
+app/*$py.class
+
+# Виртуальные окружения и env-файлы
+app/.venv/
+app/venv/
+app/.env*
+app/*.env
+
+# Тесты и логи
+app/tests/
+app/*.log
+app/logs/
+
+# Парсеры
+app/parsed_*.html
+app/parsed_*.json
+app/cache/
+
+# Данные и конфиги
+**/data/
+**/dataset/
+**/mongo_data/
+**/dump/
+*.csv
+*.json
+*.xlsx
+*.bson
+*.ns
+
+# Системные файлы
+.git/
+.gitignore
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Документация
+docs/
+*.md
+!README.md

@@ -1,0 +1,96 @@
+### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.python-version
+
+### Virtual Environment ###
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+### IDE ###
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+### Flask ###
+instance/
+*.instance
+.flaskenv
+
+### Docker ###
+docker-compose.*.yml
+!.dockerignore
+!Dockerfile
+*.dockerignore
+docker-data/
+.env
+.env.local
+
+### Database ###
+# MongoDB
+/data/
+/dump/
+*.ns
+*.mongodb
+journal/
+*.sock
+*.lock
+storage.bson
+/mongo_data/
+
+### Logs ###
+*.log
+logs/
+
+### Development ###
+*.env
+*.bak
+*.tmp
+/cache/
+*.cache
+parsed_*.html
+/parsed_data/
+
+### System ###
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+### Testing ###
+.coverage
+htmlcov/
+.pytest_cache/
+
+### Jupyter (optional) ###
+.ipynb_checkpoints/
+*.ipynb

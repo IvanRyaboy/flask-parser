@@ -1,0 +1,21 @@
+services:
+  flask:
+    build: .
+    command: python main.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6.0
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
