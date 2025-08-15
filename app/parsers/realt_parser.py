@@ -28,7 +28,7 @@ def parse_all_apartments_ids_from_realt() -> List[Dict]:
         if id_span:
             text = id_span.get_text(strip=True)
             apt_id = text[2:].strip()
-            apartment_ids.append({'_id': apt_id, 'link': apt_link})
+            apartment_ids.append({'_id': apt_id, 'link': apt_link, 'state': 'first'})
 
     return apartment_ids
 
@@ -60,9 +60,11 @@ def parse_apartment_data_from_realt(url: str):
             value = None
         data[key] = value
 
+    data['state'] = 'second'
+    data['link'] = url
     return data
 
 
 if __name__ == "__main__":
-    data = parse_apartment_data_from_realt("https://realt.by/sale-flats/object/3822764/")
+    data = parse_apartment_data_from_realt("https://realt.by/brest-region/sale-flats/object/3824111/")
     print(data)
