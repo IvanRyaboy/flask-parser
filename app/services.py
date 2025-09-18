@@ -1,7 +1,7 @@
-from database import get_db
-from parsers.realt_parser import parse_all_apartments_ids_from_realt, parse_apartment_data_from_realt
+from app.database import get_db
+from app.parsers.realt_parser import parse_all_apartments_ids_from_realt, parse_apartment_data_from_realt
 from bson import ObjectId
-from translator import transform_mongo_to_django
+from app.translator import transform_mongo_to_django
 import requests
 
 

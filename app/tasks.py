@@ -1,5 +1,5 @@
-from app_celery import celery
-from services import *
+from app.app_celery import celery
+from app.services import *
 import logging
 
 
@@ -8,6 +8,9 @@ logger = logging.getLogger(__name__)
 
 @celery.task(name='tasks.parse_apartment_list', bind=True)
 def parse_apartment_list(self):
+    """
+    Запуск парсинга всего списка квартир
+    """
     try:
         logger.info("Начало парсинга списка квартир")
         result = put_apartments_list_from_realt_to_mongo()
@@ -20,6 +23,9 @@ def parse_apartment_list(self):
 
 @celery.task(name='tasks.parse_apartment_details', bind=True)
 def parse_apartment_details(self):
+    """
+    Запуск парсинга деталей отдельной квартиры
+    """
     try:
         logger.info("Начало парсинга деталей квартир")
         result = put_apartment_info_from_realt_to_mongo()
@@ -32,6 +38,9 @@ def parse_apartment_details(self):
 
 @celery.task(name='tasks.send_webhook_to_django', bind=True)
 def send_webhook_to_django(self):
+    """
+    Отправляет вебхук на сервис Django
+    """
     try:
         logger.info("Sending apartment IDs to Django webhook")
         result = send_ids_webhook_to_django()

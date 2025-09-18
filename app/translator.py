@@ -2,6 +2,9 @@ import json
 
 
 def transform_mongo_to_django(mongo_data):
+    """
+    Переводит русские поля в mongo на английский и подгоняет под структуру API
+    """
     DEFAULT_VALUES = {
         # Обязательные поля для Location
         'building.location.street': 'Не указана',
@@ -154,7 +157,12 @@ def transform_mongo_to_django(mongo_data):
     for django_field, (mongo_field, converter) in numeric_mapping.items():
         if mongo_field in mongo_data:
             try:
-                django_data[django_field] = converter(mongo_data[mongo_field])
+                value = converter(mongo_data[mongo_field])
+                if django_field == "construction_year":
+                    # поле вложенное
+                    django_data["building"]["construction_year"] = value
+                else:
+                    django_data[django_field] = value
             except (ValueError, TypeError, AttributeError):
                 pass
 
@@ -162,11 +170,15 @@ def transform_mongo_to_django(mongo_data):
     for django_field, config in choice_mapping.items():
         mongo_field = config["field"]
         if mongo_field in mongo_data:
-            # Пробуем найти соответствие
             value = mongo_data[mongo_field]
-            django_data[django_field] = config["choices"].get(value, config["default"])
+            mapped = config["choices"].get(value, config["default"])
+            if django_field == "wall_material":
+                # кладём в нужное вложенное поле
+                django_data["building"]["wall_material"] = mapped
+            else:
+                django_data[django_field] = mapped
 
-    # Обрабатываем этажи (если есть поле "Этаж / этажность")
+    # Обрабатываем этажи
     if "Этаж / этажность" in mongo_data:
         try:
             floor, floors_total = [x.strip() for x in mongo_data["Этаж / этажность"].split("/")]
@@ -226,6 +238,7 @@ if __name__ == "__main__":
   "Площадь жилая": "74 м²",
   "Площадь общая": "78 м²",
   "Раздельных комнат": "3",
+  "Тип дома": "Панельный",
   "Район": "Гродненский район",
   "Район города": "Октябрьский район",
   "Ремонт": "Евроремонт",
