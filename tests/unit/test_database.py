@@ -27,7 +27,7 @@ def test_get_db_returns_apartments(monkeypatch):
     # Подменяем MongoClient в тестируемом модуле
     monkeypatch.setattr(database, "MongoClient", fake_client)
 
-    db = database.get_db()
+    db = database.get_apartments_db()
 
     # Проверяем, что вызвали с правильным URI
     assert captured["uri"] == "mongodb://mongo:27017/mydatabase"
@@ -45,8 +45,8 @@ def test_get_db_multiple_calls_create_new_clients(monkeypatch):
 
     monkeypatch.setattr(database, "MongoClient", fake_client)
 
-    db1 = database.get_db()
-    db2 = database.get_db()
+    db1 = database.get_apartments_db()
+    db2 = database.get_apartments_db()
 
     # Должны быть разные объекты DummyDB
     assert db1 is not db2

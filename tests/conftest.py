@@ -20,7 +20,7 @@ def _isolate_env(monkeypatch):
     monkeypatch.setenv("ISSUER", "https://issuer.test")
 
 
-# ----------------- MONGO: mongomock + get_db -----------------
+# ----------------- MONGO: mongomock + get_apartments_db -----------------
 
 @pytest.fixture
 def mongo_db():
@@ -31,13 +31,13 @@ def mongo_db():
 @pytest.fixture
 def patch_database_get_db(monkeypatch, mongo_db):
     """
-    Патчим реальный модуль database.get_db, чтобы код приложения
+    Патчим реальный модуль database.get_apartments_db, чтобы код приложения
     работал с mongomock.
     """
     # Если модуль уже импортирован – патчим его.
     try:
         database = importlib.import_module("database")
-        monkeypatch.setattr(database, "get_db", lambda: mongo_db, raising=True)
+        monkeypatch.setattr(database, "get_apartments_db", lambda: mongo_db, raising=True)
     except ModuleNotFoundError:
         # Иначе подсовываем фиктивный модуль до импорта приложения.
         fake_database = types.ModuleType("database")

@@ -73,7 +73,7 @@ class FakeDB:
 @pytest.fixture
 def fake_db(monkeypatch):
     db = FakeDB()
-    monkeypatch.setattr(srv, "get_db", lambda: db)
+    monkeypatch.setattr(srv, "get_apartments_db", lambda: db)
     return db
 
 
@@ -141,7 +141,7 @@ def test_put_apartments_list_when_parser_returns_empty(fake_db, patch_parsers, c
 
 
 def test_put_apartments_list_db_error_returns_empty(monkeypatch, capsys):
-    monkeypatch.setattr(srv, "get_db", lambda: (_ for _ in ()).throw(RuntimeError("db down")))
+    monkeypatch.setattr(srv, "get_apartments_db", lambda: (_ for _ in ()).throw(RuntimeError("db down")))
     out = srv.put_apartments_list_from_realt_to_mongo()
     assert out == []
     assert "Database connection error" in capsys.readouterr().out
@@ -181,7 +181,7 @@ def test_put_apartment_info_no_first_docs_returns_none(fake_db, patch_parsers, p
 
 
 def test_put_apartment_info_db_error_returns_empty(monkeypatch, capsys):
-    monkeypatch.setattr(srv, "get_db", lambda: (_ for _ in ()).throw(RuntimeError("db down")))
+    monkeypatch.setattr(srv, "get_apartments_db", lambda: (_ for _ in ()).throw(RuntimeError("db down")))
     out = srv.put_apartment_info_from_realt_to_mongo()
     assert out == []
     assert "Database connection error" in capsys.readouterr().out
@@ -221,7 +221,7 @@ def test_send_ids_webhook_posts_ids_and_returns_list(fake_db, monkeypatch):
 
 
 def test_send_ids_webhook_db_error_returns_empty(monkeypatch, capsys):
-    monkeypatch.setattr(srv, "get_db", lambda: (_ for _ in ()).throw(RuntimeError("db down")))
+    monkeypatch.setattr(srv, "get_apartments_db", lambda: (_ for _ in ()).throw(RuntimeError("db down")))
     out = srv.send_ids_webhook_to_django()
     assert out == []
     assert "Database connection error" in capsys.readouterr().out

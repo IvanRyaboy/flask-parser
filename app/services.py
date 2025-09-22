@@ -1,13 +1,13 @@
-from app.database import get_db
-from app.parsers.realt_parser import parse_all_apartments_ids_from_realt, parse_apartment_data_from_realt
+from database import get_apartments_db
+from parsers.realt_parser import parse_all_apartments_ids_from_realt, parse_apartment_data_from_realt
 from bson import ObjectId
-from app.translator import transform_mongo_to_django
+from translator import transform_mongo_to_django
 import requests
 
 
 def put_apartments_list_from_realt_to_mongo():
     try:
-        db = get_db()
+        db = get_apartments_db()
         coll = db.apartments
     except Exception as e:
         print(f'Database connection error: {e}')
@@ -41,7 +41,7 @@ def put_apartments_list_from_realt_to_mongo():
 
 def put_apartment_info_from_realt_to_mongo():
     try:
-        db = get_db()
+        db = get_apartments_db()
         coll = db.apartments
     except Exception as e:
         print(f'Database connection error: {e}')
@@ -77,7 +77,7 @@ def put_apartment_info_from_realt_to_mongo():
 
 def send_ids_webhook_to_django():
     try:
-        db = get_db()
+        db = get_apartments_db()
         coll = db.apartments
     except Exception as e:
         print(f'Database connection error: {e}')

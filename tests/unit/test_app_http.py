@@ -32,7 +32,7 @@ class FakeDB:
 @pytest.fixture
 def import_main_module(monkeypatch):
     def _import(docs=None):
-        # database.get_db -> FakeDB
+        # database.get_apartments_db -> FakeDB
         fake_db = FakeDB(docs=docs or [])
         fake_database_mod = types.ModuleType("database")
         fake_database_mod.get_db = lambda: fake_db

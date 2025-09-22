@@ -1,5 +1,5 @@
-from app.app_celery import celery
-from app.services import *
+from app_celery import celery
+from services import *
 import logging
 
 

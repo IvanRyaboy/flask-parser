@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse
-from database import get_db
+from database import get_apartments_db
 import jwt
 from jwt import PyJWKClient, InvalidTokenError
 import os
@@ -39,7 +39,7 @@ def validate_token(token):
 class Apartment(Resource):
 
     def get(self, id='0'):
-        db = get_db()
+        db = get_apartments_db()
         coll = db.apartments
 
         auth_header = request.headers.get("Authorization", "")
