@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse
-from database import get_db
+from database import get_apartments_db, get_rental_db
 import jwt
 from jwt import PyJWKClient, InvalidTokenError
 import os
@@ -39,7 +39,7 @@ def validate_token(token):
 class Apartment(Resource):
 
     def get(self, id='0'):
-        db = get_db()
+        db = get_apartments_db()
         coll = db.apartments
 
         auth_header = request.headers.get("Authorization", "")
@@ -63,7 +63,34 @@ class Apartment(Resource):
             return {"error": "Apartment not found"}, 404
 
 
+class Rent(Resource):
+    def get(self, id='0'):
+        db = get_rental_db()
+        coll = db.rental
+
+        auth_header = request.headers.get("Authorization", "")
+        token = None
+
+        if auth_header.lower().startswith("bearer "):
+            token = auth_header[7:]
+
+        if not token:
+            return {"error": "Token missing"}, 401
+
+        payload = validate_token(token)
+        if not payload:
+            return {"error": "Invalid or expired token"}, 402
+
+        rent = coll.find_one(filter={'_id': id})
+
+        if rent:
+            return rent
+        else:
+            return {"error": "Rent not found"}, 404
+
+
 api.add_resource(Apartment, "/apartments/<id>")
+api.add_resource(Rent, "/rent/<id>")
 
 
 if __name__ == "__main__":

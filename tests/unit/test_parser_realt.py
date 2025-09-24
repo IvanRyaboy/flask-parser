@@ -1,7 +1,7 @@
 import types
 import pytest
 
-from app.parsers import realt_parser
+from app.parsers import realt_apartments_parser
 
 
 class _FakeResponse:
@@ -28,7 +28,7 @@ def patch_useragent(monkeypatch):
     class _UserAgent:
         random = "UnitTestAgent/1.0"
 
-    monkeypatch.setattr(realt_parser.fake_useragent, "UserAgent", lambda: _UserAgent())
+    monkeypatch.setattr(realt_apartments_parser.fake_useragent, "UserAgent", lambda: _UserAgent())
     return None
 
 
@@ -52,9 +52,9 @@ def test_parse_all_apartments_ids_happy_path(monkeypatch):
         """
 
     fake = _FakeSession({listing_url: listing_html})
-    monkeypatch.setattr(realt_parser.requests, "Session", lambda: fake)
+    monkeypatch.setattr(realt_apartments_parser.requests, "Session", lambda: fake)
 
-    out = realt_parser.parse_all_apartments_ids_from_realt()
+    out = realt_apartments_parser.parse_all_apartments_ids_from_realt()
     assert isinstance(out, list)
     assert out == [
         {"_id": "123456", "link": "https://realt.by/belarus/sale-flats/object/123456/", "state": "first"},
@@ -66,9 +66,9 @@ def test_parse_all_apartments_ids_returns_empty_when_block_missing(monkeypatch):
     listing_url = "https://realt.by/belarus/sale/flats/?page=1&sortType=createdAt"
     html_without_block = "<html><body><div>no target block</div></body></html>"
     fake = _FakeSession({listing_url: html_without_block})
-    monkeypatch.setattr(realt_parser.requests, "Session", lambda: fake)
+    monkeypatch.setattr(realt_apartments_parser.requests, "Session", lambda: fake)
 
-    out = realt_parser.parse_all_apartments_ids_from_realt()
+    out = realt_apartments_parser.parse_all_apartments_ids_from_realt()
     assert out == []
 
 
@@ -99,9 +99,9 @@ def test_parse_apartment_data_from_realt_full(monkeypatch):
     """
 
     fake = _FakeSession({card_url: card_html})
-    monkeypatch.setattr(realt_parser.requests, "Session", lambda: fake)
+    monkeypatch.setattr(realt_apartments_parser.requests, "Session", lambda: fake)
 
-    out = realt_parser.parse_apartment_data_from_realt(card_url)
+    out = realt_apartments_parser.parse_apartment_data_from_realt(card_url)
 
     assert out["title"] == "Квартира 2-комнатная"          # NBSP заменён
     assert out["price"] == "100 000 $"                      # NBSP заменён
@@ -127,8 +127,8 @@ def test_parse_apartment_data_from_realt_when_value_only_in_anchor(monkeypatch):
     </body></html>
     """
     fake = _FakeSession({card_url: card_html})
-    monkeypatch.setattr(realt_parser.requests, "Session", lambda: fake)
+    monkeypatch.setattr(realt_apartments_parser.requests, "Session", lambda: fake)
 
-    out = realt_parser.parse_apartment_data_from_realt(card_url)
+    out = realt_apartments_parser.parse_apartment_data_from_realt(card_url)
     assert out["Сайт"] == "example site"  # NBSP обработан
     assert out["price"] == "1 $"

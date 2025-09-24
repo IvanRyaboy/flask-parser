@@ -102,7 +102,7 @@ def test_parse_apartment_details_retry_on_error(tasks_module, monkeypatch, caplo
 
 
 def test_send_webhook_to_django_success(tasks_module, monkeypatch, caplog):
-    monkeypatch.setattr(tasks_module, "send_ids_webhook_to_django",
+    monkeypatch.setattr(tasks_module, "send_apartments_ids_webhook_to_django",
                         lambda: ["1", "2", "3"])
 
     caplog.set_level("INFO")
@@ -114,7 +114,7 @@ def test_send_webhook_to_django_success(tasks_module, monkeypatch, caplog):
 def test_send_webhook_to_django_retry_on_error(tasks_module, monkeypatch, caplog):
     monkeypatch.setattr(
         tasks_module,
-        "send_ids_webhook_to_django",
+        "send_apartments_ids_webhook_to_django",
         lambda: (_ for _ in ()).throw(RuntimeError("net")),
     )
 
