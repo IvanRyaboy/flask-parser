@@ -13,16 +13,28 @@ celery.conf.update(
     timezone='UTC',
     enable_utc=True,
     beat_schedule={
-        'first_parse_every_1_hour': {
+        'first_parse_apartments_every_1_hour': {
             'task': 'tasks.parse_apartment_list',
             'schedule': 3600.0,
         },
-        'second_parse_a_day': {
+        'first_parse_rent_every_1_hour': {
+            'task': 'tasks.parse_rent_list',
+            'schedule': 3600.0,
+        },
+        'second_parse_apartments_a_day': {
             'task': 'tasks.parse_apartment_details',
             'schedule': crontab(hour=12, minute=0),
         },
-        'send_webhooks_once_a_day': {
-            'task': 'tasks.send_webhook_to_django',
+        'second_parse_rent_a_day': {
+            'task': 'tasks.parse_rent_details',
+            'schedule': crontab(hour=12, minute=0),
+        },
+        'send_apartments_webhooks_once_a_day': {
+            'task': 'tasks.send_apartments_webhook_to_django',
+            'schedule': crontab(hour=13, minute=0),
+        },
+        'send_rent_webhooks_once_a_day': {
+            'task': 'tasks.send_rent_webhook_to_django',
             'schedule': crontab(hour=13, minute=0),
         }
     }

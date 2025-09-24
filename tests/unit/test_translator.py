@@ -1,11 +1,11 @@
 import pytest
 import math
 
-from app.translator import transform_mongo_to_django
+from app.translator import transform_mongo_apartments_to_django
 
 
 def test_defaults_are_applied_when_no_fields():
-    out = transform_mongo_to_django({})
+    out = transform_mongo_apartments_to_django({})
     assert out["title"] == "Без названия"
     assert out["price"] == 0.0
     assert out["room_count"] == 1
@@ -26,7 +26,7 @@ def test_direct_mapping_fields():
         "Номер договора": "ABC123",
         "Ремонт": "Евроремонт",
     }
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     assert out["title"] == "Тестовая квартира"
     assert out["link"] == "http://example.com/flat/1"
     assert out["description"] == "Описание"
@@ -44,7 +44,7 @@ def test_numeric_mappings_and_parsing():
         "Высота потолков": "2.7 м",
         "Год постройки": "2019",
     }
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     assert math.isclose(out["price"], 277770.0)
     assert math.isclose(out["total_area"], 78.0)
     assert math.isclose(out["living_area"], 74.0)
@@ -65,7 +65,7 @@ def test_numeric_mappings_and_parsing():
 ])
 def test_choice_mapping_balcony(val, expected):
     mongo = {"Балкон": val}
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     assert out["balcony"] == expected
 
 
@@ -76,7 +76,7 @@ def test_choice_mapping_other_fields():
         "Собственность": "Государственная",
         "Тип дома": "Кирпичный",
     }
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     assert out["sale_conditions"] == "Alternative"
     assert out["condition"] == "Good"
     assert out["ownership_type"] == "State"
@@ -85,14 +85,14 @@ def test_choice_mapping_other_fields():
 
 def test_floor_and_floors_total():
     mongo = {"Этаж / этажность": "6 / 7"}
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     assert out["floor"] == 6
     assert out["building"]["floors_total"] == 7
 
 
 def test_coordinates():
     mongo = {"Координаты": "53.6673, 23.8516"}
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     loc = out["building"]["location"]
     assert math.isclose(loc["latitude"], 53.6673)
     assert math.isclose(loc["longitude"], 23.8516)
@@ -106,7 +106,7 @@ def test_address_fields_mapping():
         "Номер дома": "33",
         "Район": "Гродненский район",
     }
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     loc = out["building"]["location"]
     assert loc["town"]["region"]["name"] == "Гродненская область"
     assert loc["town"]["name"] == "Гродно"
@@ -120,14 +120,14 @@ def test_invalid_numeric_values_are_ignored():
         "Площадь общая": "не число",
         "Количество комнат": None,
     }
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     assert out["total_area"] == 0.0
     assert out["room_count"] == 1
 
 
 def test_invalid_coordinates_are_ignored():
     mongo = {"Координаты": "abc,xyz"}
-    out = transform_mongo_to_django(mongo)
+    out = transform_mongo_apartments_to_django(mongo)
     loc = out["building"]["location"]
     assert loc["latitude"] is None
     assert loc["longitude"] is None

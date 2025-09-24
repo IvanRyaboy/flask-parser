@@ -97,7 +97,7 @@ def patch_parsers(monkeypatch):
 @pytest.fixture
 def patch_translator(monkeypatch):
     def _set(value):
-        monkeypatch.setattr(srv, "transform_mongo_to_django", lambda doc: dict(value))
+        monkeypatch.setattr(srv, "transform_mongo_apartments_to_django", lambda doc: dict(value))
     return _set
 
 
@@ -212,7 +212,7 @@ def test_send_ids_webhook_posts_ids_and_returns_list(fake_db, monkeypatch):
 
     monkeypatch.setattr(srv.requests, "post", fake_post)
 
-    out = srv.send_ids_webhook_to_django()
+    out = srv.send_apartments_ids_webhook_to_django()
     assert out == ["1", "3"]
     assert captured["url"] == "http://django:8000/webhook-endpoint/"
     assert captured["json"] == {"ids": ["1", "3"]}
@@ -222,6 +222,6 @@ def test_send_ids_webhook_posts_ids_and_returns_list(fake_db, monkeypatch):
 
 def test_send_ids_webhook_db_error_returns_empty(monkeypatch, capsys):
     monkeypatch.setattr(srv, "get_apartments_db", lambda: (_ for _ in ()).throw(RuntimeError("db down")))
-    out = srv.send_ids_webhook_to_django()
+    out = srv.send_apartments_ids_webhook_to_django()
     assert out == []
     assert "Database connection error" in capsys.readouterr().out
