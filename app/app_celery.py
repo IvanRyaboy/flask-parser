@@ -23,19 +23,19 @@ celery.conf.update(
         },
         'second_parse_apartments_a_day': {
             'task': 'tasks.parse_apartment_details',
-            'schedule': crontab(hour=12, minute=0),
+            'schedule': crontab(hour=0, minute=0),
         },
         'second_parse_rent_a_day': {
             'task': 'tasks.parse_rent_details',
-            'schedule': crontab(hour=12, minute=0),
+            'schedule': crontab(hour=0, minute=0),
         },
         'send_apartments_webhooks_once_a_day': {
             'task': 'tasks.send_apartments_webhook_to_django',
-            'schedule': crontab(hour=13, minute=0),
+            'schedule': crontab(hour=1, minute=0),
         },
         'send_rent_webhooks_once_a_day': {
             'task': 'tasks.send_rent_webhook_to_django',
-            'schedule': crontab(hour=13, minute=0),
+            'schedule': crontab(hour=1, minute=0),
         }
     }
 )

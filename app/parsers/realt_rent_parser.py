@@ -3,6 +3,14 @@ from typing import List, Dict
 import requests
 from bs4 import BeautifulSoup
 import fake_useragent
+from uuid import UUID, uuid5
+
+
+NAMESPACE_APARTMENTS = UUID("6d8a1e59-3a85-4b8c-9f2d-5e4e8f9b1c33")
+
+
+def stable_uuid_for(link: str) -> str:
+    return str(uuid5(NAMESPACE_APARTMENTS, link))
 
 
 def parse_all_rent_ids_from_realt() -> List[Dict]:
@@ -26,8 +34,7 @@ def parse_all_rent_ids_from_realt() -> List[Dict]:
         apt_tag = apt.find('a', class_='z-1 absolute top-0 left-0 w-full h-full cursor-pointer')
         apt_link = 'https://realt.by' + apt_tag.get('href') if apt_tag else None
         if id_span:
-            text = id_span.get_text(strip=True)
-            apt_id = text[2:].strip()
+            apt_id = stable_uuid_for(apt_link)
             rent_ids.append({'_id': apt_id, 'link': apt_link, 'state': 'first'})
 
     return rent_ids
@@ -44,7 +51,13 @@ def parse_rent_data_from_realt(url: str):
     price = soup.find('h2', class_='!inline-block mr-1 lg:text-h2Lg text-h2 font-raleway font-bold flex items-center').text
     title = title.replace('\xa0', ' ').strip()
     price = price.replace('\xa0', ' ').strip()
-    data = {'title': title, 'price': price}
+    description_section = soup.find('h3', string='Описание')
+    description = ''
+    if description_section:
+        desc_div = description_section.find_next('div', class_='text-basic-900')
+        if desc_div:
+            description = desc_div.get_text(separator="\n").replace('\xa0', ' ').strip()
+    data = {'title': title, 'price': price, 'description': description}
 
     for li in soup.select('ul.w-full.-my-1 > li'):
         key = li.select_one('span.text-basic').get_text(strip=True)
